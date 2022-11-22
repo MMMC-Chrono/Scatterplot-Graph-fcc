@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Scatterplot Graph</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js" integrity="sha512-MefNfAGJ/pEy89xLOFs3V6pYPs6AmUhXJrRlydI/9wZuGrqxmrdQ80zKHUcyadAcpH67teDZcBeS6oMJLPtTqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" href="styles.css">
+        <script src="https://kit.fontawesome.com/ba7f655f8f.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <script src='https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js'></script>
+        <script>
+
+            fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json')
+                .then(response => response.json())
+                .then(response => {
+                    const { data } = response;
+                    collectedData(data)
+                })
+
+            function collectedData(data) {
+
+                const w = 600;
+                const h = 400;
+                const padding = 30;
+
+                const svg = d3.select('body')
+                              .append('svg')
+                              .attr('width', w)
+                              .attr('height', h)
+
+
+                const title = svg.append('text')
+                                 .text(`Doping in Professional Bicycle Racing`)
+                                 .attr('x', 180)
+                                 .attr('y', 30)
+                                 .attr('id', 'title')
+
+            }
+        </script>
+    </body>
+</html>
