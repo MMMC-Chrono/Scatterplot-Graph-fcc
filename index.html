@@ -79,16 +79,24 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                     let result = yearGap * (range / yearDifference);
                     return w - result - padding
                 }
+                function yAxisMeasurements(d) {
+                    let secondDifference = (d3.max(data, (d) => d.Seconds) - d3.min(data, (d) => d.Seconds));
+                    let secondGap = (d3.max(data, (d) => d.Seconds) + 1) - d.Seconds;
+                    let range = h - (padding*2);
+                    let result = secondGap * (range / secondDifference);
+                    return result + padding
+                }
 
                 const circles = svg.selectAll('circle')
                                    .data(data)
                                    .enter()
                                    .append('circle')
                                    .attr('r', '3')
-                                   .attr('cx',(d, i) => xAxisMeasurements(d))
-                                   .attr('cy', 300)
+                                   .attr('cx',(d) => xAxisMeasurements(d))
+                                   .attr('cy', (d) => yAxisMeasurements(d))
                                    .attr('class', 'dot')
-                                   .attr('data-xvalue', (d, i) => xAxisMeasurements(d))
+                                   .attr('data-xvalue', (d) => xAxisMeasurements(d))
+                                   .attr('data-yvalue', (d) => yAxisMeasurements(d))
             }
         </script>
     </body>
