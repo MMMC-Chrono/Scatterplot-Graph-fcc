@@ -37,7 +37,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                  .attr('id', 'title')
                 //x-axis
                 const xAxisScale = d3.scaleLinear()
-                                     .domain([d3.min(data, (d, i) => d.Year), d3.max(data, (d, i) => d.Year + 1)])
+                                     .domain([d3.min(data, (d, i) => d.Year) - 1, d3.max(data, (d, i) => d.Year + 1)])
                                      .range([padding, w - padding])
                 const xAxis = d3.axisBottom(xAxisScale);
                 svg.append('g')
@@ -72,11 +72,22 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                    .attr('id', 'y-axis')
                    .call(yAxis)
 
-                /*const circles = svg.selectAll('circle')
+                const circles = svg.selectAll('circle')
                                    .data(data)
                                    .enter()
                                    .append('circle')
-                                   */
+                                   .attr('r', '3')
+                                   .attr('cx',(d, i) => {
+                                    let yearDifference = 
+                                        (d3.max(data, (d) => d.Year) - d3.min(data, (d) => d.Year))
+                                         + 2;
+                                    let yearGap = (d3.max(data, (d) => d.Year) + 1) - d.Year;
+                                    let range = w - (padding*2);
+                                    let result = yearGap * (range / yearDifference);
+                                    return w - result - padding 
+                                   })
+                                   .attr('cy', 100)
+                                   .attr('class', 'dot')
             }
         </script>
     </body>
