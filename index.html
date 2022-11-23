@@ -12,10 +12,10 @@
         <script src='https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js'></script>
         <script>
 
-            fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json')
+fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json') 
                 .then(response => response.json())
                 .then(response => {
-                    const { data } = response;
+                    const data = response;
                     collectedData(data)
                 })
 
@@ -23,20 +23,60 @@
 
                 const w = 600;
                 const h = 400;
-                const padding = 30;
+                const padding = 60;
 
                 const svg = d3.select('body')
                               .append('svg')
                               .attr('width', w)
                               .attr('height', h)
 
-
                 const title = svg.append('text')
                                  .text(`Doping in Professional Bicycle Racing`)
                                  .attr('x', 180)
                                  .attr('y', 30)
                                  .attr('id', 'title')
+                //x-axis
+                const xAxisScale = d3.scaleLinear()
+                                     .domain([d3.min(data, (d, i) => d.Year), d3.max(data, (d, i) => d.Year + 1)])
+                                     .range([padding, w - padding])
+                const xAxis = d3.axisBottom(xAxisScale);
+                svg.append('g')
+                   .attr('transform', 'translate(0,' + (h - padding) + ')')
+                   .attr('id', 'x-axis')
+                   .call(xAxis)
+                //y-axis
+                let specifier = "%M:%S";
+                let parsedData = data.map((d) => {
+                    return d3.timeParse(specifier)(d.Time);
+                });
+                function increasedSecond(time) {
+                    let step = 1000;
+                    let returnTime = [];
+                    for (let d = time[0]; d <= time[1]; d.setTime(d.getTime() + step)) {
+                        if (d.getSeconds() % 15 === 0) {
+                            returnTime.push(d.getTime());
+                        }
+                    }
+                    return returnTime;
+                }
+                const yAxisScale = d3.scaleTime()
+                                     .domain(d3.extent((parsedData)))
+                                     .range([h - padding, padding])
+                const yAxis = d3.axisLeft(yAxisScale)
+                                .tickValues(increasedSecond(d3.extent(parsedData)))
+                                .tickFormat((d) => {
+                                    return d3.timeFormat(specifier)(d)
+                                });
+                svg.append('g')
+                   .attr('transform', 'translate('+(padding)+')')
+                   .attr('id', 'y-axis')
+                   .call(yAxis)
 
+                /*const circles = svg.selectAll('circle')
+                                   .data(data)
+                                   .enter()
+                                   .append('circle')
+                                   */
             }
         </script>
     </body>
