@@ -52,7 +52,12 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                 function increasedSecond(time) {
                     let step = 1000;
                     let returnTime = [];
+                    let firstTime = new Date(time[0]);
+                    firstTime.setTime(time[0].getTime() - 5000)
+                    let lastTime = new Date(time[1]);
+                    //console.log(firstTime, time[0], lastTime)
                     for (let d = time[0]; d <= time[1]; d.setTime(d.getTime() + step)) {
+                        //console.log(d.setTime(d.getTime()), d.getTime(), d)
                         if (d.getSeconds() % 15 === 0) {
                             returnTime.push(d.getTime());
                         }
@@ -68,7 +73,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                     return d3.timeFormat(specifier)(d)
                                 });
                 svg.append('g')
-                   .attr('transform', 'translate('+(padding)+')')
+                   .attr('transform', 'translate('+(padding)+',0)')
                    .attr('id', 'y-axis')
                    .call(yAxis)
 
@@ -91,12 +96,15 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .data(data)
                                    .enter()
                                    .append('circle')
-                                   .attr('r', '3')
                                    .attr('cx',(d) => xAxisMeasurements(d))
-                                   .attr('cy', (d) => yAxisMeasurements(d))
+                                   .attr('cy', (d) => yAxisMeasurements(d))       
+                                   .attr('r', '3')
                                    .attr('class', 'dot')
-                                   .attr('data-xvalue', (d) => xAxisMeasurements(d))
-                                   .attr('data-yvalue', (d) => yAxisMeasurements(d))
+                                   .attr('data-xvalue', (d) => d.Year)
+                                   .attr('data-yvalue', (d, i) => {
+                                    let result = parsedData[i];
+                                    return result
+                                   })
             }
         </script>
     </body>
