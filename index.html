@@ -66,7 +66,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                     return returnTime;
                 }
                 const yAxisScale = d3.scaleTime()
-                                     .domain(d3.extent((parsedData)))
+                                     .domain(d3.extent(parsedData))
                                      .range([h - padding, padding])
                 const yAxis = d3.axisLeft(yAxisScale)
                                 .tickValues(increasedSecond(d3.extent(parsedData)))
@@ -74,7 +74,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                     return d3.timeFormat(specifier)(d)
                                 });
                 svg.append('g')
-                   .attr('transform', 'translate('+(padding)+',0)')
+                   .attr('transform', 'translate('+(padding)+', 0)')
                    .attr('id', 'y-axis')
                    .call(yAxis)
 
@@ -83,12 +83,11 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                     let yearGap = (d3.max(data, (d) => d.Year) + 1) - d.Year;
                     let range = w - (padding*2);
                     let result = yearGap * (range / yearDifference);
-                    console.log(d3.max(data, (d) => d.Year), d3.min(data, (d) => d.Year))
                     return w - result - padding
                 }
                 function yAxisMeasurements(d) {
                     let secondDifference = (d3.max(data, (d) => d.Seconds) - d3.min(data, (d) => d.Seconds));
-                    let secondGap = (d3.max(data, (d) => d.Seconds) + 1) - d.Seconds;
+                    let secondGap = (d3.max(data, (d) => d.Seconds)) - d.Seconds;
                     let range = h - (padding*2);
                     let result = secondGap * (range / secondDifference);
                     return result + padding
@@ -103,10 +102,14 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .attr('r', '3')
                                    .attr('class', 'dot')
                                    .attr('data-xvalue', (d) => d.Year)
-                                   .attr('data-yvalue', (d, i) => {
-                                    let result = parsedData[i];
-                                    return result
-                                   })
+                                   .attr('data-yvalue', (d, i) => parsedData[i])
+                
+                const legends = svg.append('text')
+                                   .text("35 Fastest times up Alpe d'Huez")
+                                   .attr('x', 220)
+                                   .attr('y', 50)
+                                   .attr('id', 'legend')
+                                   .attr('font-size', '13')
             }
         </script>
     </body>
