@@ -39,7 +39,8 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                 const xAxisScale = d3.scaleLinear()
                                      .domain([d3.min(data, (d, i) => d.Year) - 1, d3.max(data, (d, i) => d.Year + 1)])
                                      .range([padding, w - padding])
-                const xAxis = d3.axisBottom(xAxisScale);
+                const xAxis = d3.axisBottom(xAxisScale)
+                                .tickFormat(d3.format('d'))
                 svg.append('g')
                    .attr('transform', 'translate(0,' + (h - padding) + ')')
                    .attr('id', 'x-axis')
@@ -82,6 +83,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                     let yearGap = (d3.max(data, (d) => d.Year) + 1) - d.Year;
                     let range = w - (padding*2);
                     let result = yearGap * (range / yearDifference);
+                    console.log(d3.max(data, (d) => d.Year), d3.min(data, (d) => d.Year))
                     return w - result - padding
                 }
                 function yAxisMeasurements(d) {
