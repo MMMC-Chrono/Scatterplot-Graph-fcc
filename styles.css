@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #e9e9ff;
+    font-family:'Arial';
+}
+svg {
+    position: absolute;
+    height: 100%;
+    width: 90%;
+    max-width: 900px;
+    background: whitesmoke;
+    box-shadow: 0px 0px 5px 5px gray;
+}
+.dot {
+    cursor: pointer;
+}
+#tooltip {
+    filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}
