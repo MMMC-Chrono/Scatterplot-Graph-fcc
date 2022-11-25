@@ -27,3 +27,32 @@ svg {
 #tooltip {
     filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 }
+@media only screen and (max-width: 600px) {
+    footer {
+        position: relative;
+        top: 200px;
+        text-align: center;
+        font-size: 10px;
+        z-index: 10;
+    }
+    #gmail {
+        text-decoration: none;
+        color: #7e7eeb;
+        cursor: pointer;
+    }
+}
+@media only screen and (min-width: 601px) {
+    footer {
+        position: relative;
+        top: 240px;
+        text-align: center;
+        font-size: 12px;
+        z-index: 10;
+    }
+    #gmail {
+        text-decoration: none;
+        color: #7e7eeb;
+        cursor: pointer;
+    }
+}
+
