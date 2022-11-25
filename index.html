@@ -21,20 +21,23 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
 
             function collectedData(data) {
 
-                const w = 600;
-                const h = 400;
+                const w = 800;
+                const h = 600;
                 const padding = 60;
 
                 const svg = d3.select('body')
                               .append('svg')
                               .attr('width', w)
                               .attr('height', h)
+                              .attr('viewBox', '0 0 800 600')
+                              .attr('preserveAspectRatio', 'xMidYMid meet')
 
                 const title = svg.append('text')
                                  .text(`Doping in Professional Bicycle Racing`)
-                                 .attr('x', 180)
+                                 .attr('x', 270)
                                  .attr('y', 30)
                                  .attr('id', 'title')
+                                 .attr('font-size', '20')
                 //x-axis
                 const xAxisScale = d3.scaleLinear()
                                      .domain([d3.min(data, (d, i) => d.Year) - 1, d3.max(data, (d, i) => d.Year + 1)])
@@ -53,12 +56,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                 function increasedSecond(time) {
                     let step = 1000;
                     let returnTime = [];
-                    let firstTime = new Date(time[0]);
-                    firstTime.setTime(time[0].getTime() - 5000)
-                    let lastTime = new Date(time[1]);
-                    //console.log(firstTime, time[0], lastTime)
                     for (let d = time[0]; d <= time[1]; d.setTime(d.getTime() + step)) {
-                        //console.log(d.setTime(d.getTime()), d.getTime(), d)
                         if (d.getSeconds() % 15 === 0) {
                             returnTime.push(d.getTime());
                         }
@@ -70,25 +68,23 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                      .range([h - padding, padding])
                 const yAxis = d3.axisLeft(yAxisScale)
                                 .tickValues(increasedSecond(d3.extent(parsedData)))
-                                .tickFormat((d) => {
-                                    return d3.timeFormat(specifier)(d)
-                                });
+                                .tickFormat((d) => d3.timeFormat(specifier)(d));
                 svg.append('g')
-                   .attr('transform', 'translate('+(padding)+', 0)')
+                   .attr('transform', 'translate(' + (padding) + ', 0)')
                    .attr('id', 'y-axis')
                    .call(yAxis)
 
                 function xAxisMeasurements(d) {
                     let yearDifference = (d3.max(data, (d) => d.Year) - d3.min(data, (d) => d.Year)) + 2;
                     let yearGap = (d3.max(data, (d) => d.Year) + 1) - d.Year;
-                    let range = w - (padding*2);
+                    let range = w - (padding * 2);
                     let result = yearGap * (range / yearDifference);
                     return w - result - padding
                 }
                 function yAxisMeasurements(d) {
                     let secondDifference = (d3.max(data, (d) => d.Seconds) - d3.min(data, (d) => d.Seconds));
                     let secondGap = (d3.max(data, (d) => d.Seconds)) - d.Seconds;
-                    let range = h - (padding*2);
+                    let range = h - (padding * 2);
                     let result = secondGap * (range / secondDifference);
                     return result + padding
                 }
@@ -99,17 +95,83 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .append('circle')
                                    .attr('cx',(d) => xAxisMeasurements(d))
                                    .attr('cy', (d) => yAxisMeasurements(d))       
-                                   .attr('r', '3')
+                                   .attr('r', '5')
                                    .attr('class', 'dot')
+                                   .attr('fill', (d, i) => d.Doping === "" ? 'blue': 'red')
+                                   .attr('opacity', '0.65')
                                    .attr('data-xvalue', (d) => d.Year)
-                                   .attr('data-yvalue', (d, i) => parsedData[i])
+                                   .attr('data-yvalue', (d, i) => {
+                                    let date = new Date(parsedData[i])
+                                    let result = date.toISOString()
+                                    return result;
+                                    })
+                                   .on('mouseover', (d, i) => {
+                                        tooltip.attr('opacity', '1')
+                                               .attr('fill', '#ccccff')
+                                               .attr('x', xAxisMeasurements(i) - 80)
+                                               .attr('y', yAxisMeasurements(i) + 20)
+                                        nameLabel.attr('opacity', '1')
+                                                 .text(i.Name)
+                                                 .attr('x', xAxisMeasurements(i) - 45)
+                                                 .attr('y', yAxisMeasurements(i) + 40)
+                                        nationalityLabel.attr('opacity', '1')
+                                                        .text('Nationality:' + i.Nationality)
+                                                        .attr('x', xAxisMeasurements(i) - 65)
+                                                        .attr('y', yAxisMeasurements(i) + 60)
+                                        yearLabel.attr('opacity', '1')
+                                                 .text('Year:' + i.Year)
+                                                 .attr('x', xAxisMeasurements(i) - 65)
+                                                 .attr('y', yAxisMeasurements(i) + 80)
+                                         console.log(d, i)
+                                        document.querySelector('#tooltip').setAttribute('data-year', i.Year)
+                                   })
+                                   .on('mouseout', (d, i) => {
+                                        tooltip.attr('opacity', '0')
+                                        nameLabel.attr('opacity', '0')
+                                        nationalityLabel.attr('opacity', '0')
+                                        yearLabel.attr('opacity', '0')
+                                   })
                 
-                const legends = svg.append('text')
+                const legend = svg.append('text')
                                    .text("35 Fastest times up Alpe d'Huez")
-                                   .attr('x', 220)
+                                   .attr('x', 319)
                                    .attr('y', 50)
                                    .attr('id', 'legend')
-                                   .attr('font-size', '13')
+                                   .attr('font-size', '17')
+
+                const tooltip = svg.append('rect')
+                                   .attr('id', 'tooltip')
+                                   .attr('width', 170)
+                                   .attr('height', 75)
+                                   .attr('opacity', '0')
+                const nameLabel = svg.append('text')
+                                     .attr('opacity', '0')
+                const nationalityLabel = svg.append('text')
+                                            .attr('opacity', '0')
+                const yearLabel = svg.append('text')
+                                     .attr('opacity', '0')
+
+                const redBox = svg.append('rect')
+                                  .attr('width', '20')
+                                  .attr('height', '20')
+                                  .attr('fill', 'blue')
+                                  .attr('x', '570')
+                                  .attr('y', '400')
+                const redCaption = svg.append('text')
+                                      .text('No doping allegations')
+                                      .attr('x', 600)
+                                      .attr('y', 415)
+                
+                const blueBox = svg.append('rect')
+                                  .attr('width', '20')
+                                  .attr('height', '20')
+                                  .attr('fill', 'red')
+                                  .attr('x', '570')
+                                  .attr('y', '430')
+                const blueCaption = svg.append('text')
+                                       .text('Riders with doping allegations')
+                                       .attr('x', 600)
+                                       .attr('y', 445)
             }
         </script>
     </body>
