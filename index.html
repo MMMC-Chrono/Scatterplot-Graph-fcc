@@ -74,27 +74,12 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                    .attr('id', 'y-axis')
                    .call(yAxis)
 
-                function xAxisMeasurements(d) {
-                    let yearDifference = (d3.max(data, (d) => d.Year) - d3.min(data, (d) => d.Year)) + 2;
-                    let yearGap = (d3.max(data, (d) => d.Year) + 1) - d.Year;
-                    let range = w - (padding * 2);
-                    let result = yearGap * (range / yearDifference);
-                    return w - result - padding
-                }
-                function yAxisMeasurements(d) {
-                    let secondDifference = (d3.max(data, (d) => d.Seconds) - d3.min(data, (d) => d.Seconds));
-                    let secondGap = (d3.max(data, (d) => d.Seconds)) - d.Seconds;
-                    let range = h - (padding * 2);
-                    let result = secondGap * (range / secondDifference);
-                    return result + padding
-                }
-
                 const circles = svg.selectAll('circle')
                                    .data(data)
                                    .enter()
                                    .append('circle')
-                                   .attr('cx',(d) => xAxisMeasurements(d))
-                                   .attr('cy', (d) => yAxisMeasurements(d))       
+                                   .attr('cx',(d) => xAxisScale(d.Year))
+                                   .attr('cy', (d) => yAxisScale(d3.timeParse(specifier)(d.Time)))       
                                    .attr('r', '5')
                                    .attr('stroke', 'black')
                                    .attr('class', 'dot')
@@ -102,31 +87,30 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .attr('opacity', '0.6')
                                    .attr('data-xvalue', (d) => d.Year)
                                    .attr('data-yvalue', (d, i) => {
-                                    let date = new Date(parsedData[i])
-                                    let result = date.toISOString()
-                                    return result;
+                                    let result = d3.timeParse(specifier)(d.Time)
+                                    return result.toISOString();
                                     })
                                    .on('mouseover', (d, i) => {
+                                        const xLocation = xAxisScale(i.Year);
+                                        const yLocation = yAxisScale(d3.timeParse(specifier)(i.Time));
                                         tooltip.attr('opacity', '1')
                                                .attr('fill', '#ccccff')
-                                               .attr('x', xAxisMeasurements(i) - 80)
-                                               .attr('y', yAxisMeasurements(i) + 20)
+                                               .attr('x', xLocation - 80)
+                                               .attr('y', yLocation + 20)
                                         nameLabel.attr('opacity', '1')
                                                  .text(i.Name)
-                                                 .attr('x', xAxisMeasurements(i) - 45)
-                                                 .attr('y', yAxisMeasurements(i) + 40)
+                                                 .attr('x', xLocation - 45)
+                                                 .attr('y', yLocation + 40)
                                         nationalityLabel.attr('opacity', '1')
                                                         .text('Nationality: ' + i.Nationality)
-                                                        .attr('x', xAxisMeasurements(i) - 65)
-                                                        .attr('y', yAxisMeasurements(i) + 60)
+                                                        .attr('x', xLocation - 65)
+                                                        .attr('y', yLocation + 60)
                                         yearLabel.attr('opacity', '1')
                                                  .text('Year: ' + i.Year)
-                                                 .attr('x', xAxisMeasurements(i) - 65)
-                                                 .attr('y', yAxisMeasurements(i) + 80)
+                                                 .attr('x', xLocation - 65)
+                                                 .attr('y', yLocation + 80)
                                          console.log(d, i)
                                         document.querySelector('#tooltip').setAttribute('data-year', i.Year)
-                                        
-                document.querySelector('#tooltip').style.background = '#ccccff';
                                    })
                                    .on('mouseout', (d, i) => {
                                         tooltip.attr('opacity', '0')
@@ -148,6 +132,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .attr('height', 75)
                                    .attr('opacity', '0')
                                    .attr('rx', '30')
+                                   .attr('stroke', 'gray')
                                    
                 const nameLabel = svg.append('text')
                                      .attr('opacity', '0')
