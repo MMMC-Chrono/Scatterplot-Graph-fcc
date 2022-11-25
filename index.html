@@ -22,8 +22,8 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             function collectedData(data) {
 
                 const w = 800;
-                const h = 600;
-                const padding = 60;
+                const h = 570;
+                const padding = 70;
 
                 const svg = d3.select('body')
                               .append('svg')
@@ -34,10 +34,10 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
 
                 const title = svg.append('text')
                                  .text(`Doping in Professional Bicycle Racing`)
-                                 .attr('x', 270)
+                                 .attr('x', 250)
                                  .attr('y', 30)
                                  .attr('id', 'title')
-                                 .attr('font-size', '20')
+                                 .attr('font-size', '22')
                 //x-axis
                 const xAxisScale = d3.scaleLinear()
                                      .domain([d3.min(data, (d, i) => d.Year) - 1, d3.max(data, (d, i) => d.Year + 1)])
@@ -96,9 +96,10 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .attr('cx',(d) => xAxisMeasurements(d))
                                    .attr('cy', (d) => yAxisMeasurements(d))       
                                    .attr('r', '5')
+                                   .attr('stroke', 'black')
                                    .attr('class', 'dot')
                                    .attr('fill', (d, i) => d.Doping === "" ? 'blue': 'red')
-                                   .attr('opacity', '0.65')
+                                   .attr('opacity', '0.6')
                                    .attr('data-xvalue', (d) => d.Year)
                                    .attr('data-yvalue', (d, i) => {
                                     let date = new Date(parsedData[i])
@@ -115,15 +116,17 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                                  .attr('x', xAxisMeasurements(i) - 45)
                                                  .attr('y', yAxisMeasurements(i) + 40)
                                         nationalityLabel.attr('opacity', '1')
-                                                        .text('Nationality:' + i.Nationality)
+                                                        .text('Nationality: ' + i.Nationality)
                                                         .attr('x', xAxisMeasurements(i) - 65)
                                                         .attr('y', yAxisMeasurements(i) + 60)
                                         yearLabel.attr('opacity', '1')
-                                                 .text('Year:' + i.Year)
+                                                 .text('Year: ' + i.Year)
                                                  .attr('x', xAxisMeasurements(i) - 65)
                                                  .attr('y', yAxisMeasurements(i) + 80)
                                          console.log(d, i)
                                         document.querySelector('#tooltip').setAttribute('data-year', i.Year)
+                                        
+                document.querySelector('#tooltip').style.background = '#ccccff';
                                    })
                                    .on('mouseout', (d, i) => {
                                         tooltip.attr('opacity', '0')
@@ -144,6 +147,8 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                    .attr('width', 170)
                                    .attr('height', 75)
                                    .attr('opacity', '0')
+                                   .attr('rx', '30')
+                                   
                 const nameLabel = svg.append('text')
                                      .attr('opacity', '0')
                 const nationalityLabel = svg.append('text')
@@ -155,22 +160,22 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                                   .attr('width', '20')
                                   .attr('height', '20')
                                   .attr('fill', 'blue')
-                                  .attr('x', '570')
+                                  .attr('x', '550')
                                   .attr('y', '400')
                 const redCaption = svg.append('text')
                                       .text('No doping allegations')
-                                      .attr('x', 600)
+                                      .attr('x', 580)
                                       .attr('y', 415)
                 
                 const blueBox = svg.append('rect')
                                   .attr('width', '20')
                                   .attr('height', '20')
                                   .attr('fill', 'red')
-                                  .attr('x', '570')
+                                  .attr('x', '550')
                                   .attr('y', '430')
                 const blueCaption = svg.append('text')
                                        .text('Riders with doping allegations')
-                                       .attr('x', 600)
+                                       .attr('x', 580)
                                        .attr('y', 445)
             }
         </script>
